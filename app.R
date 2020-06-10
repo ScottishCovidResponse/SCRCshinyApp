@@ -69,7 +69,9 @@ ui <- dashboardPage(
                 # ),
 
                 # Averaged over last 5 years
-                box(title = "all.5years.dat",
+                box(title = datasets %>%
+                      filter(dataset == "all.5years.dat") %$% title ,
+                    width = 12,
                     status = "info", solidHeader = TRUE,
                     plotlyOutput("all.5years.dat")
                 ),
@@ -136,13 +138,15 @@ server <- function(input, output) {
 
   # Multiline plots
   output$boxes.multilineplots <- renderUI({
-    lapply(seq_along(multiline.plots), function(x) {
-      box(renderPlotly(plot_linedate(get(multiline.plots[x]),
-                                     input[[paste0("topn", x)]])),
+    lapply(seq_along(multiline.plots$dataset), function(x) {
+      box(renderPlotly(plot_linedate(data = get(multiline.plots$dataset[x]),
+                                     groupby = multiline.plots$groupby[x],
+                                     n = input[[paste0("topn", x)]])),
           selectInput(inputId = paste0("topn", x), label = "Plot:",
                       choices = c("Top 5", "Top 10", "All"),
                       selected = "Top 5"),
-          title = multiline.plots[x],
+          title = multiline.plots$title[x],
+          width = 12,
           collapsible = TRUE,
           status = "info",
           solidHeader = TRUE,
@@ -152,11 +156,10 @@ server <- function(input, output) {
 
   # Line plots
   output$boxes.lineplots <- renderUI({
-    lapply(seq_along(line.plots), function(x) {
-      box(renderPlotly(get(paste0("g.", line.plots[x]))),
-          title = line.plots[x],
-          # width = 5,
-          # style = "border:2px solid #666666;border-radius:20px;",
+    lapply(seq_along(line.plots$dataset), function(x) {
+      box(renderPlotly(get(paste0("g.", line.plots$dataset[x]))),
+          title = line.plots$title[x],
+          width = 12,
           collapsible = TRUE,
           status = "info",
           solidHeader = TRUE,
@@ -166,15 +169,14 @@ server <- function(input, output) {
 
   # Stacked bar plots
   output$boxes.stackedplots <- renderUI({
-    lapply(seq_along(stacked.plots), function(x) {
-      box(renderPlotly(plot_stackedbar(get(stacked.plots[x]),
-                                       stackedbar.titles[x],
-                                       input[[paste0("sortby", x)]])),
+    lapply(seq_along(stacked.plots$dataset), function(x) {
+      box(renderPlotly(plot_stackedbar(data = get(stacked.plots$dataset[x]),
+                                       sortby = input[[paste0("sortby", x)]])),
           selectInput(inputId = paste0("sortby", x), label = "Sort by",
                       choices = c("total", "carehome", "home",
                                   "hospital", "other"),
                       selected = "total"),
-          title = stacked.plots[x],
+          title = stacked.plots$title[x],
           collapsible = TRUE,
           status = "info",
           solidHeader = TRUE,
@@ -184,10 +186,9 @@ server <- function(input, output) {
 
   # Stacked bar date plots
   output$boxes.stackeddateplots <- renderUI({
-    lapply(seq_along(stackeddate.plots), function(x) {
-      box(renderPlotly(plot_stackedbardate(get(stackeddate.plots[x]),
-                                           stackedbardate.titles[x])),
-          title = stackeddate.plots[x],
+    lapply(seq_along(stackeddate.plots$dataset), function(x) {
+      box(renderPlotly(plot_stackedbardate(data = get(stackeddate.plots$dataset[x]))),
+          title = stackeddate.plots$title[x],
           collapsible = TRUE,
           status = "info",
           solidHeader = TRUE,
@@ -197,14 +198,14 @@ server <- function(input, output) {
 
   # 5-year average
   output$all.5years.dat <- renderPlotly({
-    plot_linedate(all.5years.dat)
+    plot_linedate(all.5years.dat, "kdfjh")
   })
 
   # Other plots
   output$boxes.otherplots <- renderUI({
-    lapply(seq_along(other.plots), function(x) {
-      box(renderPlotly(get(paste0("g.", other.plots[x]))),
-          title = other.plots[x],
+    lapply(seq_along(other.plots$dataset), function(x) {
+      box(renderPlotly(get(paste0("g.", other.plots$dataset[x]))),
+          title = other.plots$title[x],
           collapsible = TRUE,
           status = "info",
           solidHeader = TRUE,

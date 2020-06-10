@@ -4,7 +4,7 @@
 \alias{plot_stackedbardate}
 \title{plot_stackedbardate}
 \usage{
-plot_stackedbardate(data, title)
+plot_stackedbardate(data)
 }
 \description{
 plot_stackedbardate

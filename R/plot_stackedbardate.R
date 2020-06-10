@@ -2,7 +2,7 @@
 #'
 #' @export
 #'
-plot_stackedbardate <- function(data, title) {
+plot_stackedbardate <- function(data) {
 
   plot.this <- data %>%
     tibble::rownames_to_column("rowid") %>%
@@ -44,9 +44,10 @@ plot_stackedbardate <- function(data, title) {
                                         color = 'rgb(50, 171, 96)'),
                             showarrow = FALSE) %>%
     plotly::layout(barmode = "stack",
-                   title = title,
-                   xaxis = list(title = "Number of deaths"),
-                   yaxis = list(title = "Data zone"),
+                   xaxis = list(title = "Week commencing",
+                                type = "date",
+                                tickformat = "%d. %b"),
+                   yaxis = list(title = "Number of deaths"),
                    legend = list(orientation = "h",
                                  xanchor = "center",
                                  x = 0.5))

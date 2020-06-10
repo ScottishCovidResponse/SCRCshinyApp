@@ -5,78 +5,44 @@
 # Extract data ------------------------------------------------------------
 
 h5filename <- "data-raw/deaths-involving-coronavirus-covid-19.h5"
-# file_structure(h5filename)
 
-all.councilloc.dat <- reconstruct_object(
-  h5filename, "councilarea/per_location/all_deaths")
-covid.councilloc.dat <- reconstruct_object(
-  h5filename, "councilarea/per_location/covid_related_deaths")
-
-all.council.dat <- reconstruct_object(
-  h5filename, "councilarea/per_week/all_deaths")
-covid.council.dat <- reconstruct_object(
-  h5filename, "councilarea/per_week/covid_related_deaths")
-
-all.location.dat <- reconstruct_object(
-  h5filename, "location/per_week/all_deaths")
-covid.location.dat <- reconstruct_object(
-  h5filename, "location/per_week/covid_related_deaths")
-
-all.nhsloc.dat <- reconstruct_object(
-  h5filename, "nhsboard/per_location/all_deaths")
-covid.nhsloc.dat <- reconstruct_object(
-  h5filename, "nhsboard/per_location/covid_related_deaths")
-
-all.nhs.dat <- reconstruct_object(
-  h5filename, "nhsboard/per_week/all_deaths")
-covid.nhs.dat <- reconstruct_object(
-  h5filename, "nhsboard/per_week/covid_related_deaths")
-
-all.females.dat <- reconstruct_object(
-  h5filename, "scotland/per_week/all_deaths/females/all_ages")
-all.females.group.dat <- reconstruct_object(
-  h5filename, "scotland/per_week/all_deaths/females/by_agegroup")
-all.males.dat <- reconstruct_object(
-  h5filename, "scotland/per_week/all_deaths/males/all_ages")
-all.males.group.dat <- reconstruct_object(
-  h5filename, "scotland/per_week/all_deaths/males/by_agegroup")
-all.persons.dat <- reconstruct_object(
-  h5filename, "scotland/per_week/all_deaths/persons/all_ages")
-all.persons.group.dat <- reconstruct_object(
-  h5filename, "scotland/per_week/all_deaths/persons/by_agegroup")
-
-all.5years.dat <- reconstruct_object(
-  h5filename, "scotland/per_week/all_deaths/persons/averaged_over_5years")
-
-covid.females.dat <- reconstruct_object(
-  h5filename, "scotland/per_week/covid_related_deaths/females/all_ages")
-covid.females.group.dat <- reconstruct_object(
-  h5filename, "scotland/per_week/covid_related_deaths/females/by_agegroup")
-covid.males.dat <- reconstruct_object(
-  h5filename, "scotland/per_week/covid_related_deaths/males/all_ages")
-covid.males.group.dat <- reconstruct_object(
-  h5filename, "scotland/per_week/covid_related_deaths/males/by_agegroup")
-covid.persons.dat <- reconstruct_object(
-  h5filename, "scotland/per_week/covid_related_deaths/persons/all_ages")
-covid.persons.group.dat <- reconstruct_object(
-  h5filename, "scotland/per_week/covid_related_deaths/persons/by_agegroup")
-
-
-# Assign data to plots ----------------------------------------------------
-
-datasets <- c("all.councilloc.dat", "covid.councilloc.dat",
-              "all.council.dat", "covid.council.dat",
-              "all.location.dat", "covid.location.dat",
-              "all.nhsloc.dat", "covid.nhsloc.dat",
-              "all.nhs.dat", "covid.nhs.dat",
-              "all.females.dat", "all.females.group.dat",
-              "all.males.dat", "all.males.group.dat",
-              "all.persons.dat", "all.persons.group.dat",
-              "all.5years.dat", "covid.females.dat",
-              "covid.females.group.dat", "covid.males.dat",
-              "covid.males.group.dat", "covid.persons.dat",
-              "covid.persons.group.dat") %>%
-  data.frame(dataset = .) %>%
+datasets <- file_structure(h5filename) %>%
+  dplyr::rename(location = name) %>%
+  # Define object names (where extracted data will be stored)
+  dplyr::mutate(dataset = c("all.councilloc.dat", "covid.councilloc.dat",
+                            "all.council.dat", "covid.council.dat",
+                            "all.location.dat", "covid.location.dat",
+                            "all.nhsloc.dat", "covid.nhsloc.dat",
+                            "all.nhs.dat", "covid.nhs.dat",
+                            "all.females.dat", "all.females.group.dat",
+                            "all.males.dat", "all.males.group.dat",
+                            "all.persons.dat", "all.persons.group.dat",
+                            "all.5years.dat", "covid.females.dat",
+                            "covid.females.group.dat", "covid.males.dat",
+                            "covid.males.group.dat", "covid.persons.dat",
+                            "covid.persons.group.dat")) %>%
+  # Generate plot titles
+  dplyr::mutate(title = dplyr::case_when(
+    grepl("all", dataset) ~ "Total number of deaths per week",
+    grepl("covid", dataset) ~ "Number of covid-related deaths per week")) %>%
+  dplyr::mutate(title = dplyr::case_when(
+    grepl("council", dataset) ~ paste0(title, " by council area"),
+    grepl("nhs", dataset) ~ paste0(title, " by NHS board"),
+    T ~ title)) %>%
+  dplyr::mutate(title = dplyr::case_when(
+    grepl("loc\\.", dataset) ~ paste0(title, " and location"),
+    T ~ title)) %>%
+  dplyr::mutate(title = dplyr::case_when(
+    grepl("group", dataset) ~ paste0(title, " by age group"),
+    T ~ title)) %>%
+  dplyr::mutate(title = dplyr::case_when(
+    grepl("\\.males", dataset) ~ paste0(title, " (males)"),
+    grepl("females", dataset) ~ paste0(title, " (females)"),
+    T ~ title)) %>%
+  dplyr::mutate(title = dplyr::case_when(
+    dataset == "all.5years.dat" ~ paste0(title, " (averaged over 5 years)"),
+    T ~ title)) %>%
+  # Define what kind of plot will be generated
   dplyr::mutate(plotstyle = dplyr::case_when(
     grepl("council\\.dat", dataset) ~ "plot_multiline",
     grepl("nhs\\.dat", dataset) ~ "plot_multiline",
@@ -84,13 +50,27 @@ datasets <- c("all.councilloc.dat", "covid.councilloc.dat",
     grepl("location", dataset) ~ "plot_stackedbardate",
     grepl("councilloc", dataset) ~ "plot_stackedbar",
     grepl("nhsloc", dataset) ~ "plot_stackedbar")) %>%
-  dplyr::mutate(title = dplyr::case_when(
-    grepl("location", dataset) ~ "Number of deaths by location",
-    T ~ "Number of deaths"))
+  # Define how data will be grouped within each plot
+  dplyr::mutate(groupby = dplyr::case_when(
+    plotstyle == "plot_multiline" & grepl("council", location) ~
+      "Council area",
+    plotstyle == "plot_multiline" & grepl("nhs", location) ~ "NHS board",
+    plotstyle == "plot_line" & grepl("males", location) ~ "Age group",
+    plotstyle == "plot_line" & grepl("persons", location) ~ "Age group",
+    T ~ "Legend title"))
+
+# Extract data
+for(i in seq_len(nrow(datasets)))
+  assign(datasets$dataset[i], reconstruct_object(h5filename,
+                                                 datasets$location[i]))
+
+
+
+# Assign data to plots ----------------------------------------------------
 
 # Multi line plots
 multiline.plots <- datasets %>%
-  dplyr::filter(plotstyle == "plot_multiline") %$% dataset
+  dplyr::filter(plotstyle == "plot_multiline")
 
 # Line plots
 line.plots <- datasets %>%
@@ -100,27 +80,26 @@ line.plots <- datasets %>%
     T ~ 4)) %>%
   tidyr::separate(dataset, c(NA, "two", NA), "\\.", remove = FALSE,
                   extra = "drop") %>%
-  dplyr::arrange(one, two) %$%
-  dataset
+  dplyr::arrange(one, two)
 
-for(i in seq_along(line.plots))
-  assign(paste0("g.", line.plots[i]), plot_linedate(get(line.plots[i])))
+for(i in seq_along(line.plots$dataset))
+  assign(paste0("g.", line.plots$dataset[i]),
+         plot_linedate(data = get(line.plots$dataset[i]),
+                       groupby = line.plots$groupby[i]))
 
 # Stacked bar plots
 stacked.plots <- datasets %>%
-  dplyr::filter(plotstyle == "plot_stackedbar") %$% dataset
-stackedbar.titles <- datasets %>%
-  dplyr::filter(plotstyle == "plot_stackedbar") %$% title
+  dplyr::filter(plotstyle == "plot_stackedbar")
 
 stackeddate.plots <- datasets %>%
-  dplyr::filter(plotstyle == "plot_stackedbardate") %$% dataset
-stackedbardate.titles <- datasets %>%
-  dplyr::filter(plotstyle == "plot_stackedbar") %$% title
+  dplyr::filter(plotstyle == "plot_stackedbardate")
 
 # Other plots
 other.plots <- datasets %>%
-  dplyr::filter(is.na(plotstyle)) %$% dataset
+  dplyr::filter(is.na(plotstyle))
 
-for(i in seq_along(other.plots))
-  assign(paste0("g.", other.plots[i]), plot_linedate(get(other.plots[i])))
+for(i in seq_along(other.plots$dataset))
+  assign(paste0("g.", other.plots$dataset[i]),
+         plot_linedate(data = get(other.plots$dataset[i]),
+                       groupby = other.plots$groupby[i]))
 

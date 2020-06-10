@@ -4,7 +4,7 @@
 \alias{plot_linedate}
 \title{plot_linedate}
 \usage{
-plot_linedate(data, n)
+plot_linedate(data, groupby, n)
 }
 \description{
 plot_linedate

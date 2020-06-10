@@ -2,7 +2,7 @@
 #'
 #' @export
 #'
-plot_stackedbar <- function(data, title, sortby) {
+plot_stackedbar <- function(data, sortby) {
 
   plot.this <- data %>%
     tibble::rownames_to_column("rowid") %>%
@@ -63,7 +63,6 @@ plot_stackedbar <- function(data, title, sortby) {
                                         color = 'rgb(50, 171, 96)'),
                             showarrow = FALSE) %>%
     plotly::layout(barmode = "stack",
-                   title = title,
                    xaxis = list(title = "Number of deaths"),
                    yaxis = list(title = "Data zone"),
                    legend = list(orientation = "h",
