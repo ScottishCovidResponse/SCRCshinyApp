@@ -1,4 +1,4 @@
-Package: shinyApp
+Package: SCRCshinyApp
 Title: Functions to generate and process shinyApp
 Version: 1.0
 Authors@R: c(person("Sonia", "Mitchell", email = "sonia.mitchell@glasgow.ac.uk",

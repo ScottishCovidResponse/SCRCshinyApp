@@ -1,9 +1,9 @@
-#' SCRCdataApp
+#' SCRCshinyApp
 #'
 #' Functions used by the SCRC shiny app
 #'
-#' @name SCRCdataApp-package
-#' @aliases SCRCdataApp
+#' @name SCRCshinyApp-package
+#' @aliases SCRCshinyApp
 #' @docType package
 #'
 NULL
