@@ -6,4 +6,11 @@
 #' @aliases SCRCshinyApp
 #' @docType package
 #'
+#' @import dplyr
+#' @import hdf5r
+#' @import leaflet
+#' @import magrittr
+#' @import plotly
+#' @import shiny
+#' @import shinydashboard
 NULL

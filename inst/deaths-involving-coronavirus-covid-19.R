@@ -4,7 +4,8 @@
 
 # Extract data ------------------------------------------------------------
 
-h5filename <- "data-raw/deaths-involving-coronavirus-covid-19.h5"
+h5filename <- system.file("data-raw/deaths-involving-coronavirus-covid-19.h5",
+                          package = "SCRCshinyApp")
 
 datasets <- file_structure(h5filename) %>%
   dplyr::rename(location = name) %>%

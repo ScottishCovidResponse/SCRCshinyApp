@@ -2,12 +2,13 @@
 #'
 #'
 
-dz.sf <- rgdal::readOGR(file.path("..", "SCRCdataAPI", "data-raw",
-                                  "datazone_shapefile",
-                                  "SG_DataZone_Bdry_2011.shp"))
+
+filename <- system.file("data-raw/datazone_shapefile/SG_DataZone_Bdry_2011.shp",
+                        package = "SCRCshinyApp")
+dz.sf <- rgdal::readOGR(filename)
 
 
-h5filename <- file.path("..", "SCRCdataAPI", "demographics.h5")
+h5filename <- file.path("..", "data-raw", "demographics.h5")
 # file_structure(h5filename)
 original.dat <- reconstruct_object(h5filename, "dz/1year/persons") %>%
   tibble::rownames_to_column("DataZone") %>%
