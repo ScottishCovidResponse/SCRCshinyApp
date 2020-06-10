@@ -24,10 +24,11 @@ ui <- dashboardPage(
                icon = icon("dashboard")),
       menuItem("deaths-involving-coronavirus-covid-19.h5", tabName = "tab2",
                icon = icon("dashboard"), badgeLabel = "new",
-               badgeColor = "green"),
-      menuItem("demographics.h5", tabName = "tab3",
-               icon = icon("dashboard"), badgeLabel = "new",
                badgeColor = "green")
+      # ,
+      # menuItem("demographics.h5", tabName = "tab3",
+      #          icon = icon("dashboard"), badgeLabel = "new",
+      #          badgeColor = "green")
     )
   ),
 
@@ -45,11 +46,12 @@ ui <- dashboardPage(
 
       # Second tab content ------------------------------------------------
       tabItem(tabName = "tab2",
+              uiOutput("boxes.stackeddateplots"),
+
               fluidRow(
                 uiOutput("boxes.multilineplots"),
                 uiOutput("boxes.lineplots"),
                 uiOutput("boxes.stackedplots"),
-                uiOutput("boxes.stackeddateplots"),
                 # # Stacked bar plots
                 # box(title = "stacked",
                 #     status = "info", solidHeader = TRUE,
@@ -131,60 +133,82 @@ server <- function(input, output) {
   # Multiline plots
   output$boxes.multilineplots <- renderUI({
     lapply(seq_along(multiline.plots$dataset), function(x) {
-      box(renderPlotly(plot_linedate(data = get(multiline.plots$dataset[x]),
-                                     groupby = multiline.plots$groupby[x],
-                                     n = input[[paste0("topn", x)]])),
-          selectInput(inputId = paste0("topn", x), label = "Plot:",
-                      choices = c("Top 5", "Top 10", "All"),
-                      selected = "Top 5"),
-          title = multiline.plots$title[x],
-          width = 12,
-          collapsible = TRUE,
-          status = "info",
-          solidHeader = TRUE,
-          bg = "transparent")
+      box(
+        renderPlotly(plot_linedate(data = get(multiline.plots$dataset[x]),
+                                   groupby = multiline.plots$groupby[x],
+                                   n = input[[paste0("topn", x)]])),
+        selectInput(inputId = paste0("topn", x), label = "Plot:",
+                    choices = c("Top 5", "Top 10", "All"),
+                    selected = "Top 5"),
+        title = multiline.plots$title[x],
+        width = 12,
+        collapsible = TRUE,
+        status = "info",
+        solidHeader = TRUE,
+        bg = "transparent"
+      )
     })
   })
 
   # Line plots
   output$boxes.lineplots <- renderUI({
     lapply(seq_along(line.plots$dataset), function(x) {
-      box(renderPlotly(get(paste0("g.", line.plots$dataset[x]))),
-          title = line.plots$title[x],
-          width = 12,
-          collapsible = TRUE,
-          status = "info",
-          solidHeader = TRUE,
-          bg = "transparent")
+      box(
+        renderPlotly(get(paste0("g.", line.plots$dataset[x]))),
+        title = line.plots$title[x],
+        width = 12,
+        collapsible = TRUE,
+        status = "info",
+        solidHeader = TRUE,
+        bg = "transparent"
+      )
     })
   })
 
   # Stacked bar plots
   output$boxes.stackedplots <- renderUI({
     lapply(seq_along(stacked.plots$dataset), function(x) {
-      box(renderPlotly(plot_stackedbar(data = get(stacked.plots$dataset[x]),
-                                       sortby = input[[paste0("sortby", x)]])),
-          selectInput(inputId = paste0("sortby", x), label = "Sort by",
-                      choices = c("total", "carehome", "home",
-                                  "hospital", "other"),
-                      selected = "total"),
-          title = stacked.plots$title[x],
-          collapsible = TRUE,
-          status = "info",
-          solidHeader = TRUE,
-          bg = "transparent")
+      box(
+        renderPlotly(plot_stackedbar(data = get(stacked.plots$dataset[x]),
+                                     sortby = input[[paste0("sortby", x)]])),
+        selectInput(inputId = paste0("sortby", x), label = "Sort by",
+                    choices = c("total", "carehome", "home",
+                                "hospital", "other"),
+                    selected = "total"),
+        title = stacked.plots$title[x],
+        collapsible = TRUE,
+        status = "info",
+        solidHeader = TRUE,
+        bg = "transparent"
+      )
     })
   })
 
   # Stacked bar date plots
   output$boxes.stackeddateplots <- renderUI({
     lapply(seq_along(stackeddate.plots$dataset), function(x) {
-      box(renderPlotly(plot_stackedbardate(data = get(stackeddate.plots$dataset[x]))),
+      fluidRow(
+        box(
+          renderPlotly(plot_stackedbardate(
+            data = get(stackeddate.plots$dataset[x]))),
+          width = 9,
           title = stackeddate.plots$title[x],
           collapsible = TRUE,
           status = "info",
           solidHeader = TRUE,
-          bg = "transparent")
+          bg = "transparent"
+        ),
+        box(
+          renderPlotly(plot_donut(
+            data = get(stackeddate.plots$dataset[x]))),
+          width = 3,
+          title = "Location",
+          collapsible = TRUE,
+          status = "info",
+          solidHeader = TRUE,
+          bg = "transparent"
+        )
+      )
     })
   })
 
@@ -196,23 +220,25 @@ server <- function(input, output) {
   # Other plots
   output$boxes.otherplots <- renderUI({
     lapply(seq_along(other.plots$dataset), function(x) {
-      box(renderPlotly(get(paste0("g.", other.plots$dataset[x]))),
-          title = other.plots$title[x],
-          collapsible = TRUE,
-          status = "info",
-          solidHeader = TRUE,
-          bg = "transparent")
+      box(
+        renderPlotly(get(paste0("g.", other.plots$dataset[x]))),
+        title = other.plots$title[x],
+        collapsible = TRUE,
+        status = "info",
+        solidHeader = TRUE,
+        bg = "transparent"
+      )
     })
   })
 
   # Third tab --------------------------------------------------------------
-  output$mymap <- leaflet::renderLeaflet({
-    # Generate map
-    map
-    # Add legend to the map
-    mapLegend
-
-  })
+  # output$mymap <- leaflet::renderLeaflet({
+  #   # Generate map
+  #   map
+  #   # Add legend to the map
+  #   mapLegend
+  #
+  # })
 }
 
 shinyApp(ui = ui, server = server)

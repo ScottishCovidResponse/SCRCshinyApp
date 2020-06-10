@@ -29,16 +29,6 @@ plot_linedate <- function(data, groupby, n) {
       dplyr::mutate(variable = factor(variable, levels = ind))
   }
 
-  # ggplot2::ggplot(plot.this) + ggplot2::theme_minimal() +
-  #   ggplot2::geom_line(ggplot2::aes(x = date, y = value, group = variable,
-  #                                   colour = variable)) +
-  #   ggplot2::theme(rect = ggplot2::element_rect(fill = "transparent"),
-  #                  panel.grid.minor = ggplot2::element_blank(),
-  #                  legend.position = "bottom") +
-  #   ggplot2::labs(x = "Week commencing", y = "Number of deaths") +
-  #   ggplot2::scale_x_date(date_breaks = "1 week",
-  #                         date_labels = "%d %b")
-
   plotly::plot_ly(plot.this, x = ~date, y = ~value) %>%
     plotly::add_trace(type = "scatter", mode = "markers+lines",
                       color = ~variable) %>%
