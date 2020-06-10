@@ -1,16 +1,6 @@
-library(shiny)
-library(hdf5r)
-library(dplyr)
-library(ggplot2)
-library(leaflet)
-library(SPARQL)
-library(rgdal)
-library(demographicData)
-library(spdplyr)
-library(shinydashboard)
-library(shinycssloaders)
-library(SCRCdataAPI)
-
+#' demographics.h5 dataset
+#'
+#'
 
 dz.sf <- rgdal::readOGR(file.path("..", "SCRCdataAPI", "data-raw",
                                   "datazone_shapefile",

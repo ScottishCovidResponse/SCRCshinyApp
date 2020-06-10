@@ -1,10 +1,10 @@
-#' deaths-involving-coronavirus-covid-19 dataset
+#' deaths-involving-coronavirus-covid-19.h5 dataset
 #'
 #'
 
 # Extract data ------------------------------------------------------------
 
-h5filename <- "../SCRCdataAPI/deaths-involving-coronavirus-covid-19.h5"
+h5filename <- "data-raw/deaths-involving-coronavirus-covid-19.h5"
 # file_structure(h5filename)
 
 all.councilloc.dat <- reconstruct_object(
@@ -81,9 +81,12 @@ datasets <- c("all.councilloc.dat", "covid.councilloc.dat",
     grepl("council\\.dat", dataset) ~ "plot_multiline",
     grepl("nhs\\.dat", dataset) ~ "plot_multiline",
     grepl("group", dataset) ~ "plot_line",
-    grepl("location", dataset) ~ "plot_line",
+    grepl("location", dataset) ~ "plot_stackedbardate",
     grepl("councilloc", dataset) ~ "plot_stackedbar",
-    grepl("nhsloc", dataset) ~ "plot_stackedbar"))
+    grepl("nhsloc", dataset) ~ "plot_stackedbar")) %>%
+  dplyr::mutate(title = dplyr::case_when(
+    grepl("location", dataset) ~ "Number of deaths by location",
+    T ~ "Number of deaths"))
 
 # Multi line plots
 multiline.plots <- datasets %>%
@@ -101,41 +104,23 @@ line.plots <- datasets %>%
   dataset
 
 for(i in seq_along(line.plots))
-  assign(paste0("g.", line.plots[i]), plot_line(get(line.plots[i])))
+  assign(paste0("g.", line.plots[i]), plot_linedate(get(line.plots[i])))
 
 # Stacked bar plots
 stacked.plots <- datasets %>%
   dplyr::filter(plotstyle == "plot_stackedbar") %$% dataset
+stackedbar.titles <- datasets %>%
+  dplyr::filter(plotstyle == "plot_stackedbar") %$% title
+
+stackeddate.plots <- datasets %>%
+  dplyr::filter(plotstyle == "plot_stackedbardate") %$% dataset
+stackedbardate.titles <- datasets %>%
+  dplyr::filter(plotstyle == "plot_stackedbar") %$% title
 
 # Other plots
 other.plots <- datasets %>%
   dplyr::filter(is.na(plotstyle)) %$% dataset
 
 for(i in seq_along(other.plots))
-  assign(paste0("g.", other.plots[i]), plot_line(get(other.plots[i])))
+  assign(paste0("g.", other.plots[i]), plot_linedate(get(other.plots[i])))
 
-
-# Box values --------------------------------------------------------------
-
-# deathbox
-latest.total <- 2
-
-# total.deaths <- plot.deaths %>%
-#   filter(variable == "covid")
-# total.deaths <- sum(total.deaths$value, na.rm = TRUE)
-total.deaths <- 2
-
-# latest <- max(as.Date(plot.deaths$date))
-# latest.deaths <- plot.deaths %>%
-#   filter(date == latest,
-#          variable == "covid")
-# latest.deaths <- sum(latest.deaths$value)
-latest.deaths <- 5
-
-latest.current <- 3
-latest.recovered <- 3
-
-
-# countbox
-
-# userbox

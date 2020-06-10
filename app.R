@@ -4,6 +4,7 @@ library(hdf5r)
 library(leaflet)
 library(magrittr)
 library(rgdal)
+library(plotly)
 library(SCRCdataAPI)
 library(SCRCshinyApp)
 library(SPARQL)
@@ -11,11 +12,11 @@ library(spdplyr)
 library(shiny)
 library(shinycssloaders)
 library(shinydashboard)
-library(shinyWidgets)
 
-
+# source("exec/preload_data.R", local = TRUE)
+source("exec/frontpage.R", local = TRUE)
 source("exec/deaths-involving-coronavirus-covid-19.R", local = TRUE)
-source("exec/leafletapp.R", local = TRUE)
+source("exec/demographics.R", local = TRUE)
 
 
 # User interface ----------------------------------------------------------
@@ -56,7 +57,7 @@ ui <- dashboardPage(
                 uiOutput("boxes.multilineplots"),
                 uiOutput("boxes.lineplots"),
                 uiOutput("boxes.stackedplots"),
-
+                uiOutput("boxes.stackeddateplots"),
                 # # Stacked bar plots
                 # box(title = "stacked",
                 #     status = "info", solidHeader = TRUE,
@@ -70,7 +71,7 @@ ui <- dashboardPage(
                 # Averaged over last 5 years
                 box(title = "all.5years.dat",
                     status = "info", solidHeader = TRUE,
-                    plotOutput("all.5years.dat")
+                    plotlyOutput("all.5years.dat")
                 ),
 
                 # Other plots
@@ -136,9 +137,8 @@ server <- function(input, output) {
   # Multiline plots
   output$boxes.multilineplots <- renderUI({
     lapply(seq_along(multiline.plots), function(x) {
-      box(renderPlot(plot_line(get(multiline.plots[x]),
-                               input[[paste0("topn", x)]]),
-                     bg = "transparent"),
+      box(renderPlotly(plot_linedate(get(multiline.plots[x]),
+                                     input[[paste0("topn", x)]])),
           selectInput(inputId = paste0("topn", x), label = "Plot:",
                       choices = c("Top 5", "Top 10", "All"),
                       selected = "Top 5"),
@@ -153,7 +153,7 @@ server <- function(input, output) {
   # Line plots
   output$boxes.lineplots <- renderUI({
     lapply(seq_along(line.plots), function(x) {
-      box(renderPlot(get(paste0("g.", line.plots[x]))),
+      box(renderPlotly(get(paste0("g.", line.plots[x]))),
           title = line.plots[x],
           # width = 5,
           # style = "border:2px solid #666666;border-radius:20px;",
@@ -167,9 +167,9 @@ server <- function(input, output) {
   # Stacked bar plots
   output$boxes.stackedplots <- renderUI({
     lapply(seq_along(stacked.plots), function(x) {
-      box(renderPlot(plot_stackedbar(get(stacked.plots[x]),
-                                     input[[paste0("sortby", x)]]),
-                     bg = "transparent"),
+      box(renderPlotly(plot_stackedbar(get(stacked.plots[x]),
+                                       stackedbar.titles[x],
+                                       input[[paste0("sortby", x)]])),
           selectInput(inputId = paste0("sortby", x), label = "Sort by",
                       choices = c("total", "carehome", "home",
                                   "hospital", "other"),
@@ -182,15 +182,28 @@ server <- function(input, output) {
     })
   })
 
+  # Stacked bar date plots
+  output$boxes.stackeddateplots <- renderUI({
+    lapply(seq_along(stackeddate.plots), function(x) {
+      box(renderPlotly(plot_stackedbardate(get(stackeddate.plots[x]),
+                                           stackedbardate.titles[x])),
+          title = stackeddate.plots[x],
+          collapsible = TRUE,
+          status = "info",
+          solidHeader = TRUE,
+          bg = "transparent")
+    })
+  })
+
   # 5-year average
-  output$all.5years.dat <- renderPlot({
-    plot_line(all.5years.dat)
-  }, bg = "transparent")
+  output$all.5years.dat <- renderPlotly({
+    plot_linedate(all.5years.dat)
+  })
 
   # Other plots
   output$boxes.otherplots <- renderUI({
     lapply(seq_along(other.plots), function(x) {
-      box(renderPlot(get(paste0("g.", other.plots[x]))),
+      box(renderPlotly(get(paste0("g.", other.plots[x]))),
           title = other.plots[x],
           collapsible = TRUE,
           status = "info",

@@ -4,7 +4,7 @@
 \alias{plot_stackedbar}
 \title{plot_stackedbar}
 \usage{
-plot_stackedbar(data, sortby)
+plot_stackedbar(data, title, sortby)
 }
 \description{
 plot_stackedbar
