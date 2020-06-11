@@ -6,7 +6,7 @@
 # library(shinycssloaders)
 
 # source("preload_data.R", local = TRUE)
-source("frontpage.R", local = TRUE)
+# source("frontpage.R", local = TRUE)
 source("deaths-involving-coronavirus-covid-19.R", local = TRUE)
 # source("demographics.R", local = TRUE)
 
@@ -15,16 +15,17 @@ source("deaths-involving-coronavirus-covid-19.R", local = TRUE)
 
 library(shinythemes)
 
-ui <- dashboardPage(
-  dashboardHeader(title = "SCRC dashboard"),
+ui <- shinydashboard::dashboardPage(
+  shinydashboard::dashboardHeader(title = "SCRC dashboard"),
 
-  dashboardSidebar(
-    sidebarMenu(
-      menuItem("Covid-19 overview", tabName = "tab1",
-               icon = icon("dashboard")),
-      menuItem("deaths-involving-coronavirus-covid-19.h5", tabName = "tab2",
-               icon = icon("dashboard"), badgeLabel = "new",
-               badgeColor = "green")
+  shinydashboard::dashboardSidebar(
+    shinydashboard:: sidebarMenu(
+      # menuItem("Covid-19 overview", tabName = "tab1",
+      #          icon = icon("dashboard")),
+      shinydashboard::menuItem("deaths-involving-corona..",
+                               tabName = "tab2",
+                               icon = icon("dashboard"), badgeLabel = "new",
+                               badgeColor = "green")
       # ,
       # menuItem("demographics.h5", tabName = "tab3",
       #          icon = icon("dashboard"), badgeLabel = "new",
@@ -32,57 +33,60 @@ ui <- dashboardPage(
     )
   ),
 
-  dashboardBody(
-    tabItems(
+  shinydashboard::dashboardBody(
+    shinydashboard::tabItems(
       # First tab content -------------------------------------------------
-      tabItem(tabName = "tab1",
-              fluidRow(
-                valueBoxOutput("totalbox", width = 2),
-                valueBoxOutput("deathbox", width = 2),
-                valueBoxOutput("currentbox", width = 2),
-                valueBoxOutput("recoveredbox", width = 2)
-              )
+      shinydashboard::tabItem(
+        tabName = "tab1",
+        shiny::fluidRow(
+          shinydashboard::valueBoxOutput("totalbox", width = 2),
+          shinydashboard::valueBoxOutput("deathbox", width = 2),
+          shinydashboard::valueBoxOutput("currentbox", width = 2),
+          shinydashboard::valueBoxOutput("recoveredbox", width = 2)
+        )
       ),
 
       # Second tab content ------------------------------------------------
-      tabItem(tabName = "tab2",
-              uiOutput("boxes.stackeddateplots"),
+      shinydashboard::tabItem(
+        tabName = "tab2",
+        shiny::uiOutput("boxes.stackeddateplots"),
+        shiny::uiOutput("boxes.comparegender.plots"),
 
-              fluidRow(
-                uiOutput("boxes.multilineplots"),
-                uiOutput("boxes.lineplots"),
-                uiOutput("boxes.stackedplots"),
-                # # Stacked bar plots
-                # box(title = "stacked",
-                #     status = "info", solidHeader = TRUE,
-                #     plotOutput("covid.councilloc.dat"),
-                #     selectInput(inputId = "sortby", label = "Sort by",
-                #                 choices = c("total", "carehome", "home",
-                #                             "hospital", "other"),
-                #                 selected = "total")
-                # ),
+        shiny::fluidRow(
+          shiny::uiOutput("boxes.lineplots"),
+          shiny::uiOutput("boxes.sparktables"),
+          shiny::uiOutput("boxes.stackedplots")
+          # # Stacked bar plots
+          # box(title = "stacked",
+          #     status = "info", solidHeader = TRUE,
+          #     plotOutput("covid.councilloc.dat"),
+          #     selectInput(inputId = "sortby", label = "Sort by",
+          #                 choices = c("total", "carehome", "home",
+          #                             "hospital", "other"),
+          #                 selected = "total")
+          # ),
 
-                # Averaged over last 5 years
-                box(title = datasets %>%
-                      filter(dataset == "all.5years.dat") %$% title ,
-                    width = 12,
-                    status = "info", solidHeader = TRUE,
-                    plotlyOutput("all.5years.dat")
-                ),
+          # Averaged over last 5 years
+          # shinydashboard::box(title = datasets %>%
+          #                       dplyr::filter(dataset == "all.5years.dat") %$% title ,
+          #                     width = 12,
+          #                     status = "info", solidHeader = TRUE,
+          #                     plotly::plotlyOutput("all.5years.dat")
+          # )
 
-                # Other plots
-                uiOutput("boxes.otherplots")
-              )
+
+        )
       ),
 
       # Third tab content ------------------------------------------------
-      tabItem(tabName = "tab3",
-              fluidRow(
-                box(
-                  shinycssloaders::withSpinner(leaflet::leafletOutput("mymap")),
-                  shiny::p()
-                )
-              )
+      shinydashboard::tabItem(
+        tabName = "tab3",
+        shiny::fluidRow(
+          shinydashboard::box(
+            shinycssloaders::withSpinner(leaflet::leafletOutput("mymap")),
+            shiny::p()
+          )
+        )
       )
     )
   )
@@ -93,8 +97,8 @@ server <- function(input, output) {
 
   # First tab ---------------------------------------------------------------
 
-  output$totalbox <- renderValueBox({
-    valueBox(
+  output$totalbox <- shinydashboard::renderValueBox({
+    shinydashboard::valueBox(
       value = latest.total,
       subtitle = "Total cases",
       icon = icon("heart"),
@@ -102,8 +106,8 @@ server <- function(input, output) {
     )
   })
 
-  output$deathbox <- renderValueBox({
-    valueBox(
+  output$deathbox <- shinydashboard::renderValueBox({
+    shinydashboard::valueBox(
       value = total.deaths,
       subtitle = "Confirmed deaths",
       icon = icon("heartbeat"),
@@ -111,16 +115,16 @@ server <- function(input, output) {
     )
   })
 
-  output$currentbox <- renderValueBox({
-    valueBox(
+  output$currentbox <- shinydashboard::renderValueBox({
+    shinydashboard::valueBox(
       value = latest.current,
       subtitle = "Current infected",
       icon = icon("ambulance")
     )
   })
 
-  output$recoveredbox <- renderValueBox({
-    valueBox(
+  output$recoveredbox <- shinydashboard::renderValueBox({
+    shinydashboard::valueBox(
       value = latest.recovered,
       subtitle = "Recovered",
       icon = icon("heart-o")
@@ -130,16 +134,35 @@ server <- function(input, output) {
 
   # Second tab --------------------------------------------------------------
 
-  # Multiline plots
-  output$boxes.multilineplots <- renderUI({
-    lapply(seq_along(multiline.plots$dataset), function(x) {
-      box(
-        renderPlotly(plot_linedate(data = get(multiline.plots$dataset[x]),
-                                   groupby = multiline.plots$groupby[x],
-                                   n = input[[paste0("topn", x)]])),
-        selectInput(inputId = paste0("topn", x), label = "Plot:",
-                    choices = c("Top 5", "Top 10", "All"),
-                    selected = "Top 5"),
+  # Gender plots
+  output$boxes.lineplots <- shiny::renderUI({
+    lapply(seq_along(gender.plots$dataset), function(x) {
+      shinydashboard::box(
+        plotly::renderPlotly(plot_linedate(
+          data = get(gender.plots$dataset[x]),
+          legend = "Gender")),
+        shiny::div(gender.plots$location[x],
+                   style = "color:grey; text-align:right"),
+        title = gender.plots$title[x],
+        width = 12,
+        collapsible = TRUE,
+        status = "info",
+        solidHeader = TRUE,
+        bg = "transparent"
+      )
+    })
+  })
+
+  # Sparkline tables
+  output$boxes.sparktables <- shiny::renderUI({
+    lapply(seq_along(multiline.plots$covid_deaths), function(x) {
+      shinydashboard::box(
+        reactable::renderReactable(table_reactable(
+          covid_dat = get(multiline.plots$covid_deaths[x]),
+          all_dat = get(multiline.plots$all_deaths[x]))),
+        shiny::div(paste(multiline.plots$loc_c[x], "and",
+                         multiline.plots$loc_a[x]),
+                   style = "color:grey; text-align:right"),
         title = multiline.plots$title[x],
         width = 12,
         collapsible = TRUE,
@@ -150,31 +173,20 @@ server <- function(input, output) {
     })
   })
 
-  # Line plots
-  output$boxes.lineplots <- renderUI({
-    lapply(seq_along(line.plots$dataset), function(x) {
-      box(
-        renderPlotly(get(paste0("g.", line.plots$dataset[x]))),
-        title = line.plots$title[x],
-        width = 12,
-        collapsible = TRUE,
-        status = "info",
-        solidHeader = TRUE,
-        bg = "transparent"
-      )
-    })
-  })
-
   # Stacked bar plots
-  output$boxes.stackedplots <- renderUI({
+  output$boxes.stackedplots <- shiny::renderUI({
     lapply(seq_along(stacked.plots$dataset), function(x) {
-      box(
-        renderPlotly(plot_stackedbar(data = get(stacked.plots$dataset[x]),
-                                     sortby = input[[paste0("sortby", x)]])),
-        selectInput(inputId = paste0("sortby", x), label = "Sort by",
-                    choices = c("total", "carehome", "home",
-                                "hospital", "other"),
-                    selected = "total"),
+      shinydashboard::box(
+        plotly::renderPlotly(plot_stackedbar(
+          data = get(stacked.plots$dataset[x]),
+          sortby = input[[paste0("sortby", x)]])),
+        shiny::selectInput(inputId = paste0("sortby", x),
+                           label = "Sort by",
+                           choices = c("total", "carehome", "home",
+                                       "hospital", "other"),
+                           selected = "total"),
+        shiny::div(stacked.plots$location[x],
+                   style = "color:grey; text-align:right"),
         title = stacked.plots$title[x],
         collapsible = TRUE,
         status = "info",
@@ -185,12 +197,14 @@ server <- function(input, output) {
   })
 
   # Stacked bar date plots
-  output$boxes.stackeddateplots <- renderUI({
+  output$boxes.stackeddateplots <- shiny::renderUI({
     lapply(seq_along(stackeddate.plots$dataset), function(x) {
-      fluidRow(
-        box(
-          renderPlotly(plot_stackedbardate(
+      shiny::fluidRow(
+        shinydashboard::box(
+          plotly::renderPlotly(plot_stackedbardate(
             data = get(stackeddate.plots$dataset[x]))),
+          shiny::div(stackeddate.plots$location[x],
+                     style = "color:grey; text-align:right"),
           width = 9,
           title = stackeddate.plots$title[x],
           collapsible = TRUE,
@@ -198,9 +212,10 @@ server <- function(input, output) {
           solidHeader = TRUE,
           bg = "transparent"
         ),
-        box(
-          renderPlotly(plot_donut(
+        shinydashboard::box(
+          plotly::renderPlotly(plot_donut(
             data = get(stackeddate.plots$dataset[x]))),
+          shiny::br(),
           width = 3,
           title = "Location",
           collapsible = TRUE,
@@ -212,24 +227,53 @@ server <- function(input, output) {
     })
   })
 
-  # 5-year average
-  output$all.5years.dat <- renderPlotly({
-    plot_linedate(all.5years.dat, "kdfjh")
-  })
 
-  # Other plots
-  output$boxes.otherplots <- renderUI({
-    lapply(seq_along(other.plots$dataset), function(x) {
-      box(
-        renderPlotly(get(paste0("g.", other.plots$dataset[x]))),
-        title = other.plots$title[x],
-        collapsible = TRUE,
-        status = "info",
-        solidHeader = TRUE,
-        bg = "transparent"
+  # Compare genders
+  output$boxes.comparegender.plots <- shiny::renderUI({
+    lapply(seq_along(stackeddate.plots$dataset), function(x) {
+      shiny::fluidRow(
+        shinydashboard::box(
+          plotly::renderPlotly(plot_stackedbardate(
+            data = rbind.data.frame(
+              get(comparegender.plots$female_deaths[x]),
+              get(comparegender.plots$male_deaths[x])) %>%
+              dplyr::mutate(rownames = c("Female", "Male")) %>%
+              tibble::column_to_rownames("rownames"))),
+          shiny::div(paste(comparegender.plots$loc_f[x], "and",
+                           comparegender.plots$loc_m[x]),
+                     style = "color:grey; text-align:right"),
+          width = 9,
+          title = comparegender.plots$title[x],
+          collapsible = TRUE,
+          status = "info",
+          solidHeader = TRUE,
+          bg = "transparent"
+        ),
+        shinydashboard::box(
+          plotly::renderPlotly(plot_donut(
+            data = rbind.data.frame(
+              get(comparegender.plots$female_deaths[x]),
+              get(comparegender.plots$male_deaths[x])) %>%
+              dplyr::mutate(rownames = c("Female", "Male")) %>%
+              tibble::column_to_rownames("rownames"))),
+          shiny::br(),
+          width = 3,
+          title = "Location",
+          collapsible = TRUE,
+          status = "info",
+          solidHeader = TRUE,
+          bg = "transparent"
+        )
       )
     })
   })
+
+
+  # 5-year average
+  output$all.5years.dat <- plotly::renderPlotly({
+    plot_linedate(all.5years.dat, "kdfjh")
+  })
+
 
   # Third tab --------------------------------------------------------------
   # output$mymap <- leaflet::renderLeaflet({
@@ -241,4 +285,4 @@ server <- function(input, output) {
   # })
 }
 
-shinyApp(ui = ui, server = server)
+shiny::shinyApp(ui = ui, server = server)

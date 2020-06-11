@@ -2,7 +2,7 @@
 #'
 #' @export
 #'
-plot_linedate <- function(data, groupby, n) {
+plot_linedate <- function(data, legend, n) {
   plot.this <- data %>%
     tibble::rownames_to_column("variable") %>%
     reshape2::melt(id.vars = "variable", variable.name = "date") %>%
@@ -37,7 +37,7 @@ plot_linedate <- function(data, groupby, n) {
                                 type = "date",
                                 tickformat = "%d. %b"),
                    yaxis = list(title = "Number of deaths"),
-                   legend = list(title = list(text = paste0("<b>", groupby,
+                   legend = list(title = list(text = paste0("<b>", legend,
                                                             "</b>"))),
                    autosize = TRUE)
 

@@ -7,12 +7,19 @@ plot_donut <- function(data) {
     tibble::rownames_to_column("var") %>%
     reshape2::melt(id.vars = "var", variable.name = "loc") %>%
     dplyr::group_by(var) %>%
-    dplyr::summarise(total = sum(value), .groups = "drop") %>%
-    dplyr::mutate(ind = dplyr::case_when(var == "Hospital" ~ 1,
+    dplyr::summarise(total = sum(value), .groups = "drop")
+
+  if("Hospital" %in% plot.this$var) {
+    plot.this %<>% dplyr::mutate(ind = dplyr::case_when(var == "Hospital" ~ 1,
                                          var == "Care Home" ~ 2,
                                          var == "Home / Non-institution" ~ 3,
                                          var == "Other institution" ~ 4)) %>%
-    dplyr::arrange(ind)
+      dplyr::arrange(ind)
+  } else if("female" %in% plot.this$var) {
+    plot.this %<>% dplyr::mutate(ind = dplyr::case_when(var == "Female" ~ 1,
+                                         var == "Male" ~ 2)) %>%
+      dplyr::arrange(ind)
+  }
 
   pal <- rev(viridis::viridis(4))
 

@@ -47,10 +47,14 @@ datasets <- file_structure(h5filename) %>%
   dplyr::mutate(plotstyle = dplyr::case_when(
     grepl("council\\.dat", dataset) ~ "plot_multiline",
     grepl("nhs\\.dat", dataset) ~ "plot_multiline",
-    grepl("group", dataset) ~ "plot_line",
+    grepl("group", dataset) ~ "plot_gender",
+    grepl("females\\.dat", dataset)  ~ "compare_gender",
+    grepl("males\\.dat", dataset) ~ "compare_gender",
+    grepl("persons\\.dat", dataset) ~ "compare_all",
     grepl("location", dataset) ~ "plot_stackedbardate",
     grepl("councilloc", dataset) ~ "plot_stackedbar",
-    grepl("nhsloc", dataset) ~ "plot_stackedbar")) %>%
+    grepl("nhsloc", dataset) ~ "plot_stackedbar",
+    dataset == "all.5years.dat" ~ "compare_all")) %>%
   # Define how data will be grouped within each plot
   dplyr::mutate(groupby = dplyr::case_when(
     plotstyle == "plot_multiline" & grepl("council", location) ~
@@ -69,13 +73,19 @@ for(i in seq_len(nrow(datasets)))
 
 # Assign data to plots ----------------------------------------------------
 
-# Multi line plots
+# Sparkline tables
 multiline.plots <- datasets %>%
-  dplyr::filter(plotstyle == "plot_multiline")
+  dplyr::filter(plotstyle == "plot_multiline") %>%
+  dplyr::filter(grepl("^covid", dataset)) %>%
+  dplyr::rename(covid_deaths = dataset,
+                loc_c = location) %>%
+  dplyr::mutate(all_deaths = gsub("covid", "all", covid_deaths),
+                loc_a = gsub("covid_related", "all", covid_deaths),
+                title = gsub("covid-related ", "", title))
 
 # Line plots
-line.plots <- datasets %>%
-  dplyr::filter(plotstyle == "plot_line") %>%
+gender.plots <- datasets %>%
+  dplyr::filter(plotstyle == "plot_gender") %>%
   dplyr::mutate(one = dplyr::case_when(
     grepl("location", dataset) ~ 3,
     T ~ 4)) %>%
@@ -83,10 +93,15 @@ line.plots <- datasets %>%
                   extra = "drop") %>%
   dplyr::arrange(one, two)
 
-for(i in seq_along(line.plots$dataset))
-  assign(paste0("g.", line.plots$dataset[i]),
-         plot_linedate(data = get(line.plots$dataset[i]),
-                       groupby = line.plots$groupby[i]))
+# Compare gender
+comparegender.plots <- datasets %>%
+  dplyr::filter(plotstyle == "compare_gender") %>%
+  dplyr::filter(grepl("females", dataset)) %>%
+  dplyr::rename(female_deaths = dataset,
+                loc_f = location) %>%
+  dplyr::mutate(male_deaths = gsub("fe", "", female_deaths),
+                loc_m = gsub("fe", "", loc_f),
+                title = gsub(" \\(females\\)", "", title))
 
 # Stacked bar plots
 stacked.plots <- datasets %>%
@@ -95,12 +110,5 @@ stacked.plots <- datasets %>%
 stackeddate.plots <- datasets %>%
   dplyr::filter(plotstyle == "plot_stackedbardate")
 
-# Other plots
-other.plots <- datasets %>%
-  dplyr::filter(is.na(plotstyle))
 
-for(i in seq_along(other.plots$dataset))
-  assign(paste0("g.", other.plots$dataset[i]),
-         plot_linedate(data = get(other.plots$dataset[i]),
-                       groupby = other.plots$groupby[i]))
 
