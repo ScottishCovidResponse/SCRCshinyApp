@@ -15,11 +15,16 @@ plot_stackedbardate <- function(data) {
                                                   "Home / Non-institution",
                                                   "Other institution"))),
                     variable = as.Date(variable))
-  } else if("female" %in% plot.this$rowid) {
+
+    pal <- viridis::viridis(4)
+
+  } else if("Female" %in% plot.this$rowid) {
     plot.this %<>%
       dplyr::mutate(rowid = factor(rowid,
                                    levels = rev(c("Female", "Male"))),
                     variable = as.Date(variable))
+
+    pal <- c("#2b8cbe", "#df65b0")
   }
 
   total <- plot.this %>%
@@ -28,7 +33,6 @@ plot_stackedbardate <- function(data) {
 
   buffer <- max(total$total) / 20
 
-  pal <- viridis::viridis(4)
 
   plotly::plot_ly(plot.this, x = ~variable, y = ~value, type = "bar",
                   color = ~rowid, colors = pal) %>%

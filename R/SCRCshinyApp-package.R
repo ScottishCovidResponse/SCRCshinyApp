@@ -12,6 +12,6 @@
 #' @import magrittr
 #' @import plotly
 #' @import shiny
-#' @import shinydashboard
+#' @import semantic.dashboard
 #'
 NULL

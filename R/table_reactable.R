@@ -26,19 +26,27 @@ table_reactable <- function(covid_dat, all_dat) {
 
   reactable::reactable(tab.this, columns = list(
     area = reactable::colDef(name = "Area"),
-    covid_deaths = reactable::colDef(cell = function(x)
+    covid_deaths = reactable::colDef(name = "covid_bar",
+      # show = FALSE,
+      cell = function(x)
       sparkline::sparkline(x, type = "bar", chartRangeMin = 0,
-                           chartRangeMax = max(tmp_covid$value))),
+                           chartRangeMax = max(tmp_covid$value))
+      ),
     covid_total = reactable::colDef(align = "left", cell = function(x)
       bar_chart(x, x, max(tab.this$covid_total))),
-    covid_sparkline = reactable::colDef(cell = function(covid_deaths, index)
-      sparkline::sparkline(tab.this$covid_deaths[[index]])),
-    all_deaths = reactable::colDef(cell = function(x)
+    covid_sparkline = reactable::colDef(name = "covid_perweek",
+      cell = function(covid_deaths, index)
+      sparkline::sparkline(tab.this$covid_deaths[[index]])
+      ),
+    all_deaths = reactable::colDef(name = "all_bar",
+      # show = FALSE,
+      cell = function(x)
       sparkline::sparkline(x, type = "bar", chartRangeMin = 0,
-                           chartRangeMax = max(tmp_all$value))),
+                           chartRangeMax = max(tmp_all$value))
+      ),
     all_total = reactable::colDef(align = "left", cell = function(x)
       bar_chart(x, x, max(tab.this$all_total))),
-    all_sparkline = reactable::colDef(
+    all_sparkline = reactable::colDef(name = "all_perweek",
       cell = function(all_deaths, index)
         sparkline::sparkline(tab.this$all_deaths[[index]])
     )

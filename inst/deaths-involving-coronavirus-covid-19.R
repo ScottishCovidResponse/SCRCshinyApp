@@ -7,6 +7,10 @@
 h5filename <- system.file("data-raw/deaths-involving-coronavirus-covid-19.h5",
                           package = "SCRCshinyApp")
 
+conversion.table <- read.csv2(system.file("data-raw/convert.csv",
+                                          package = "SCRCshinyApp")) %>%
+  select(-X, -areatypename) %>% unique()
+
 datasets <- file_structure(h5filename) %>%
   dplyr::rename(location = name) %>%
   # Define object names (where extracted data will be stored)
@@ -17,8 +21,8 @@ datasets <- file_structure(h5filename) %>%
                             "all.nhs.dat", "covid.nhs.dat",
                             "all.females.dat", "all.females.group.dat",
                             "all.males.dat", "all.males.group.dat",
-                            "all.persons.dat", "all.persons.group.dat",
-                            "all.5years.dat", "covid.females.dat",
+                            "all.persons.dat", "all.5years.dat",
+                            "all.persons.group.dat", "covid.females.dat",
                             "covid.females.group.dat", "covid.males.dat",
                             "covid.males.group.dat", "covid.persons.dat",
                             "covid.persons.group.dat")) %>%
@@ -40,9 +44,9 @@ datasets <- file_structure(h5filename) %>%
     grepl("\\.males", dataset) ~ paste0(title, " (males)"),
     grepl("females", dataset) ~ paste0(title, " (females)"),
     T ~ title)) %>%
-  dplyr::mutate(title = dplyr::case_when(
-    dataset == "all.5years.dat" ~ paste0(title, " (averaged over 5 years)"),
-    T ~ title)) %>%
+  dplyr::mutate(title = dplyr::if_else(
+    grepl("5years", dataset),  paste0(title, " (averaged over 5 years)"),
+    title)) %>%
   # Define what kind of plot will be generated
   dplyr::mutate(plotstyle = dplyr::case_when(
     grepl("council\\.dat", dataset) ~ "plot_multiline",
@@ -80,18 +84,8 @@ multiline.plots <- datasets %>%
   dplyr::rename(covid_deaths = dataset,
                 loc_c = location) %>%
   dplyr::mutate(all_deaths = gsub("covid", "all", covid_deaths),
-                loc_a = gsub("covid_related", "all", covid_deaths),
+                loc_a = gsub("covid_related", "all", loc_c),
                 title = gsub("covid-related ", "", title))
-
-# Line plots
-gender.plots <- datasets %>%
-  dplyr::filter(plotstyle == "plot_gender") %>%
-  dplyr::mutate(one = dplyr::case_when(
-    grepl("location", dataset) ~ 3,
-    T ~ 4)) %>%
-  tidyr::separate(dataset, c(NA, "two", NA), "\\.", remove = FALSE,
-                  extra = "drop") %>%
-  dplyr::arrange(one, two)
 
 # Compare gender
 comparegender.plots <- datasets %>%
@@ -103,12 +97,30 @@ comparegender.plots <- datasets %>%
                 loc_m = gsub("fe", "", loc_f),
                 title = gsub(" \\(females\\)", "", title))
 
+# Stacked bar date plots
+stackeddate.plots <- datasets %>%
+  dplyr::filter(plotstyle == "plot_stackedbardate")
+
 # Stacked bar plots
 stacked.plots <- datasets %>%
   dplyr::filter(plotstyle == "plot_stackedbar")
 
-stackeddate.plots <- datasets %>%
-  dplyr::filter(plotstyle == "plot_stackedbardate")
+# Line plots
+gender.plots <- datasets %>%
+  dplyr::filter(plotstyle == "plot_gender") %>%
+  dplyr::mutate(one = dplyr::case_when(
+    grepl("location", dataset) ~ 3,
+    T ~ 4)) %>%
+  tidyr::separate(dataset, c(NA, "two", NA), "\\.", remove = FALSE,
+                  extra = "drop") %>%
+  dplyr::arrange(one, two)
+
+# All plots
+all.plots <- datasets %>%
+  dplyr::filter(plotstyle == "compare_all")
+
+summary.plots <- all.plots %>%
+  reshape2::dcast(1 ~ paste0("dataset", 1:3), value.var = "dataset")
 
 
 

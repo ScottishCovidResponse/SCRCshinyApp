@@ -12,7 +12,7 @@ Imports:
     magrittr,
     plotly,
     shiny,
-    shinydashboard
+    semantic.dashboard
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)

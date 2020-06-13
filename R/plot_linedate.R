@@ -29,9 +29,11 @@ plot_linedate <- function(data, legend, n) {
       dplyr::mutate(variable = factor(variable, levels = ind))
   }
 
+  pal <- RColorBrewer::display.brewer.pal(n = 7, name = 'Dark2')
+
   plotly::plot_ly(plot.this, x = ~date, y = ~value) %>%
     plotly::add_trace(type = "scatter", mode = "markers+lines",
-                      color = ~variable) %>%
+                      color = ~variable, colors = pal) %>%
     # plotly::add_markers(color = ~variable) %>%
     plotly::layout(xaxis = list(title = "Week commencing",
                                 type = "date",

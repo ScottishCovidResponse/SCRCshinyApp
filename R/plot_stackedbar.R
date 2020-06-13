@@ -33,7 +33,11 @@ plot_stackedbar <- function(data, sortby) {
   }
 
   plot.this <- plot.this %>%
-    dplyr::mutate(rowid = factor(rowid, levels = vec))
+    dplyr::mutate(rowid = factor(rowid, levels = vec)) %>%
+    dplyr::mutate(variable = factor(variable,
+                                    levels = rev(c("Hospital", "Care Home",
+                                                   "Home / Non-institution",
+                                                   "Other institution"))))
 
   total <- plot.this %>%
     dplyr::group_by(rowid) %>%
@@ -41,8 +45,10 @@ plot_stackedbar <- function(data, sortby) {
 
   buffer <- max(total$total) / 20
 
+  pal <- viridis::viridis(4)
+
   plotly::plot_ly(plot.this, x = ~value, y = ~rowid) %>%
-    plotly::add_bars(color = ~variable, orientation = "h") %>%
+    plotly::add_bars(color = ~variable, orientation = "h", colors = pal) %>%
     plotly::add_annotations(xref = "total", yref = "rowid",
                             x = ~(total + buffer), y = ~rowid,
                             text = ~total,
@@ -54,5 +60,6 @@ plot_stackedbar <- function(data, sortby) {
                    yaxis = list(title = "Data zone"),
                    legend = list(orientation = "h",
                                  xanchor = "center",
-                                 x = 0.5))
+                                 x = 0.5,
+                                 y = -0.2))
 }
