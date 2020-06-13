@@ -20,16 +20,18 @@ ui <- semantic.dashboard::dashboardPage(
 
   dashboardSidebar(
     sidebarMenu(
-      menuItem("scotgov_deaths",
+      menuItem("deaths",
                tabName = "tab1",
-               icon = icon("dashboard")),
-      menuItem("scotgov_management", tabName = "tab1",
-               icon = icon("dashboard"))
+               icon = icon("heartbeat")),
+      menuItem("management",
+               tabName = "tab2",
+               icon = icon("hospital"))
     )
   ),
 
   dashboardBody(
     tabItems(
+      selected = 1,
       # First tab content ---------------------------------------------------
       tabItem(
         tabName = "tab1",
@@ -54,7 +56,6 @@ ui <- semantic.dashboard::dashboardPage(
                                   )
           )
         ),
-
 
         # Row 1 -------------------------------------------------------------
 
@@ -126,6 +127,7 @@ ui <- semantic.dashboard::dashboardPage(
         ),
 
         # Row 4 -------------------------------------------------------------
+
         shiny::fluidRow(
           semantic.dashboard::box(width = 10,
                                   title = comparegender.plots$title[2],
@@ -183,6 +185,7 @@ ui <- semantic.dashboard::dashboardPage(
         ),
 
         # Row 6 -------------------------------------------------------------
+
         shiny::fluidRow(
           semantic.dashboard::box(width = 10,
                                   title = stackeddate.plots$title[2],
@@ -382,37 +385,349 @@ ui <- semantic.dashboard::dashboardPage(
                                         style = "color:grey; text-align:right")
                                   )
           )
+        ) # End fluidrow
+
+
+      ), # End tabitem
+
+
+      # Second tab ----------------------------------------------------------
+      tabItem(
+        tabName = "tab2",
+
+        # Row 1 -------------------------------------------------------------
+        shiny::fluidRow(
+          semantic.dashboard::box(width = 16,
+                                  title = paste(gsub(" - Confirmed", "",
+                                                     plots$title[1]), "(daily)"),
+                                  color = "red",
+                                  ribbon = TRUE,
+                                  title_side = "top right",
+                                  semantic.dashboard::column(
+                                    width = 16,
+                                    reactable::reactableOutput("nhs.confirmed"),
+                                    div(plots$location[1],
+                                        style = "color:grey; text-align:right"),
+                                    div(plots$location[2],
+                                        style = "color:grey; text-align:right"),
+                                    div(plots$location[3],
+                                        style = "color:grey; text-align:right")
+                                  )
+          )
+        ),
+
+        # Row 2 ------------------------------------------------------------
+
+        shiny::fluidRow(
+          semantic.dashboard::box(width = 16,
+                                  title = plots$title[4],
+                                  color = "red",
+                                  ribbon = TRUE,
+                                  title_side = "top right",
+                                  semantic.dashboard::column(
+                                    width = 16,
+                                    plotly::plotlyOutput("nhs.testing"),
+                                    div(plots$location[4],
+                                        style = "color:grey; text-align:right")
+                                  )
+          )
+        ),
+        # Row 3 ------------------------------------------------------------
+
+        shiny::fluidRow(
+          semantic.dashboard::box(width = 16,
+                                  title = plots$title[5],
+                                  color = "red",
+                                  ribbon = TRUE,
+                                  title_side = "top right",
+                                  semantic.dashboard::column(
+                                    width = 16,
+                                    plotly::plotlyOutput("ambulance"),
+                                    div(plots$location[5],
+                                        style = "color:grey; text-align:right")
+                                  )
+          )
+        ),
+
+        # Row 6 ------------------------------------------------------------
+
+        shiny::fluidRow(
+          semantic.dashboard::box(width = 16,
+                                  title = plots$title[6],
+                                  color = "red",
+                                  ribbon = TRUE,
+                                  title_side = "top right",
+                                  semantic.dashboard::column(
+                                    width = 16,
+                                    plotly::plotlyOutput("calls"),
+                                    div(plots$location[6],
+                                        style = "color:grey; text-align:right")
+                                  )
+          )
+        ),
+
+        h1("Adult carehomes"),
+
+        shiny::fluidRow(
+          semantic.dashboard::box(width = 8,
+                                  title = plots$title[7],
+                                  color = "red",
+                                  ribbon = TRUE,
+                                  title_side = "top right",
+                                  semantic.dashboard::column(
+                                    width = 8,
+                                    plotly::plotlyOutput("carehome1"),
+                                    div(plots$location[7],
+                                        style = "color:grey; text-align:right")
+                                  )
+          ),
+          semantic.dashboard::box(width = 8,
+                                  title = plots$title[8],
+                                  color = "red",
+                                  ribbon = TRUE,
+                                  title_side = "top right",
+                                  semantic.dashboard::column(
+                                    width = 8,
+                                    plotly::plotlyOutput("carehome2"),
+                                    div(plots$location[8],
+                                        style = "color:grey; text-align:right")
+                                  )
+          )
+        ),
+
+        shiny::fluidRow(
+          semantic.dashboard::box(width = 8,
+                                  title = plots$title[9],
+                                  color = "red",
+                                  ribbon = TRUE,
+                                  title_side = "top right",
+                                  semantic.dashboard::column(
+                                    width = 8,
+                                    plotly::plotlyOutput("carehome3"),
+                                    div(plots$location[9],
+                                        style = "color:grey; text-align:right")
+                                  )
+          ),
+          semantic.dashboard::box(width = 8,
+                                  title = plots$title[10],
+                                  color = "red",
+                                  ribbon = TRUE,
+                                  title_side = "top right",
+                                  semantic.dashboard::column(
+                                    width = 8,
+                                    plotly::plotlyOutput("carehome4"),
+                                    div(plots$location[1],
+                                        style = "color:grey; text-align:right")
+                                  )
+          )
+        ),
+
+        shiny::fluidRow(
+          semantic.dashboard::box(width = 8,
+                                  title = plots$title[11],
+                                  color = "red",
+                                  ribbon = TRUE,
+                                  title_side = "top right",
+                                  semantic.dashboard::column(
+                                    width = 8,
+                                    plotly::plotlyOutput("carehome5"),
+                                    div(plots$location[11],
+                                        style = "color:grey; text-align:right")
+                                  )
+          ),
+          semantic.dashboard::box(width = 8,
+                                  title = plots$title[12],
+                                  color = "red",
+                                  ribbon = TRUE,
+                                  title_side = "top right",
+                                  semantic.dashboard::column(
+                                    width = 8,
+                                    plotly::plotlyOutput("carehome6"),
+                                    div(plots$location[12],
+                                        style = "color:grey; text-align:right")
+                                  )
+          )
+        ),
+
+        shiny::fluidRow(
+          semantic.dashboard::box(width = 8,
+                                  title = plots$title[13],
+                                  color = "red",
+                                  ribbon = TRUE,
+                                  title_side = "top right",
+                                  semantic.dashboard::column(
+                                    width = 8,
+                                    plotly::plotlyOutput("carehome7"),
+                                    div(plots$location[13],
+                                        style = "color:grey; text-align:right")
+                                  )
+          ),
+          semantic.dashboard::box(width = 8,
+                                  title = plots$title[14],
+                                  color = "red",
+                                  ribbon = TRUE,
+                                  title_side = "top right",
+                                  semantic.dashboard::column(
+                                    width = 8,
+                                    plotly::plotlyOutput("carehome8"),
+                                    div(plots$location[14],
+                                        style = "color:grey; text-align:right")
+                                  )
+          )
+        ),
+
+
+        # Row 7 ------------------------------------------------------------
+
+        shiny::fluidRow(
+          semantic.dashboard::box(width = 16,
+                                  title = plots$title[15],
+                                  color = "red",
+                                  ribbon = TRUE,
+                                  title_side = "top right",
+                                  semantic.dashboard::column(
+                                    width = 16,
+                                    plotly::plotlyOutput("deaths"),
+                                    div(plots$location[15],
+                                        style = "color:grey; text-align:right")
+                                  )
+          )
+        ),
+
+        # Row 8 ------------------------------------------------------------
+
+        shiny::fluidRow(
+          semantic.dashboard::box(width = 16,
+                                  title = plots$title[16],
+                                  color = "red",
+                                  ribbon = TRUE,
+                                  title_side = "top right",
+                                  semantic.dashboard::column(
+                                    width = 16,
+                                    plotly::plotlyOutput("discharges"),
+                                    div(plots$location[16],
+                                        style = "color:grey; text-align:right")
+                                  )
+          )
+        ),
+
+        # Row 9 ------------------------------------------------------------
+
+        shiny::fluidRow(
+          semantic.dashboard::box(width = 16,
+                                  title = plots$title[17],
+                                  color = "red",
+                                  ribbon = TRUE,
+                                  title_side = "top right",
+                                  semantic.dashboard::column(
+                                    width = 16,
+                                    plotly::plotlyOutput("hospital"),
+                                    div(plots$location[17],
+                                        style = "color:grey; text-align:right")
+                                  )
+          )
+        ),
+
+        # Row 10 ------------------------------------------------------------
+
+        shiny::fluidRow(
+          semantic.dashboard::box(width = 16,
+                                  title = plots$title[18],
+                                  color = "red",
+                                  ribbon = TRUE,
+                                  title_side = "top right",
+                                  semantic.dashboard::column(
+                                    width = 16,
+                                    plotly::plotlyOutput("nhs.workforce"),
+                                    div(plots$location[18],
+                                        style = "color:grey; text-align:right")
+                                  )
+          )
+        ),
+
+        # Row 11 ------------------------------------------------------------
+
+        shiny::fluidRow(
+          semantic.dashboard::box(width = 16,
+                                  title = plots$title[19],
+                                  color = "red",
+                                  ribbon = TRUE,
+                                  title_side = "top right",
+                                  semantic.dashboard::column(
+                                    width = 16,
+                                    plotly::plotlyOutput("scot.testing.cum.people"),
+                                    div(plots$location[19],
+                                        style = "color:grey; text-align:right")
+                                  )
+          ),
+          semantic.dashboard::box(width = 16,
+                                  title = plots$title[20],
+                                  color = "red",
+                                  ribbon = TRUE,
+                                  title_side = "top right",
+                                  semantic.dashboard::column(
+                                    width = 16,
+                                    plotly::plotlyOutput("scot.testing.cum.tests"),
+                                    div(plots$location[20],
+                                        style = "color:grey; text-align:right")
+                                  )
+          )
+        ),
+        # Row 12 ------------------------------------------------------------
+
+
+        shiny::fluidRow(
+          semantic.dashboard::box(width = 16,
+                                  title = plots$title[21],
+                                  color = "red",
+                                  ribbon = TRUE,
+                                  title_side = "top right",
+                                  semantic.dashboard::column(
+                                    width = 16,
+                                    plotly::plotlyOutput("scot.testing.daily.people"),
+                                    div(plots$location[21],
+                                        style = "color:grey; text-align:right")
+                                  )
+          )
+        ),
+
+        # Row 13 ------------------------------------------------------------
+
+        shiny::fluidRow(
+          semantic.dashboard::box(width = 16,
+                                  title = plots$title[22],
+                                  color = "red",
+                                  ribbon = TRUE,
+                                  title_side = "top right",
+                                  semantic.dashboard::column(
+                                    width = 16,
+                                    plotly::plotlyOutput("scot.testing.daily.tests"),
+                                    div(plots$location[22],
+                                        style = "color:grey; text-align:right")
+                                  )
+          )
+        ),
+
+        # Row 14 ------------------------------------------------------------
+
+        shiny::fluidRow(
+          semantic.dashboard::box(width = 16,
+                                  title = plots$title[23],
+                                  color = "red",
+                                  ribbon = TRUE,
+                                  title_side = "top right",
+                                  semantic.dashboard::column(
+                                    width = 16,
+                                    plotly::plotlyOutput("special"),
+                                    div(plots$location[23],
+                                        style = "color:grey; text-align:right")
+                                  )
+          )
         )
 
-
-
-
-
-
-      )
-    ),
-
-    # Second tab ------------------------------------------------------------
-
-    tabItem(
-      tabName = "tab2",
-
-      # Row 1 ---------------------------------------------------------------
-
-      shiny::fluidRow(
-        semantic.dashboard::box(width = 16,
-                                title = "dsf",
-                                color = "red",
-                                ribbon = TRUE,
-                                title_side = "top right",
-                                semantic.dashboard::column(
-                                  width = 16,
-                                  "sdf"
-                                )
-        )
-      )
-    )
-  )
+      ) # End tabitem (second tab)
+    ) # End tabitems
+  ) # End dashboardBody
 
 )
 
@@ -584,7 +899,100 @@ server <- function(input, output) {
 
   # Row 1 -------------------------------------------------------------------
 
+  output$nhs.confirmed <-  reactable::renderReactable(table_two(
+    confirmed = get(plots$dataset[1]) %>%
+      convert_areacodes(conversion.table),
+    suspected = get(plots$dataset[2]) %>%
+      convert_areacodes(conversion.table),
+    total = get(plots$dataset[3]) %>%
+      convert_areacodes(conversion.table)
+  ))
 
+  output$nhs.testing <- plotly::renderPlotly(plot_lineman(
+    data = get(plots$dataset[4]) %>%
+      convert_areacodes(conversion.table),
+    legend = "NHS health board"))
+
+  output$ambulance <- plotly::renderPlotly(plot_lineman(
+    data = get(plots$dataset[5]),
+    legend = "Ambulance attendances"))
+
+  output$calls <- plotly::renderPlotly(plot_stackedman(
+    data = get(plots$dataset[6])))
+
+  # Number with current suspected COVID-19 cases
+  output$carehome1 <- plotly::renderPlotly(plot_stackedman(
+    data = get(plots$dataset[7])))
+
+  # Adult care homes which submitted a return
+  output$carehome2 <- plotly::renderPlotly(plot_stackedman(
+    data = get(plots$dataset[8])
+  ))
+
+  # Cumulative number that have reported a suspected COVID-19 case
+  output$carehome3 <- plotly::renderPlotly(plot_lineman(
+    data = get(plots$dataset[9]),
+    legend = "sdup"))
+
+  # Cumulative number of suspected COVID-19 cases
+  output$carehome4 <- plotly::renderPlotly(plot_lineman(
+    data = get(plots$dataset[10]),
+    legend = "sdup"))
+
+  # Daily number of new suspected COVID-19 cases
+  output$carehome5 <- plotly::renderPlotly(plot_stackedman(
+    data = get(plots$dataset[11])
+  ))
+
+  # scot.carehome.ratio.dat
+  output$carehome6 <- plotly::renderPlotly(plot_stackedman(
+    data = get(plots$dataset[12])
+  ))
+
+  # Number of staff reported as absent
+  output$carehome7 <- plotly::renderPlotly(plot_stackedman(
+    data = get(plots$dataset[13])
+  ))
+
+  # Total number of staff in adult care homes which submitted a return
+  output$carehome8 <- plotly::renderPlotly(plot_stackedman(
+    data = get(plots$dataset[14])
+  ))
+
+  # Number of COVID-19 confirmed deaths registered to date (cumulative)
+  output$deaths <- plotly::renderPlotly(plot_lineman(
+    data = get(plots$dataset[15]),
+    legend = "sdf"
+    ))
+
+  output$discharges <- plotly::renderPlotly(plot_stackedman(
+    data = get(plots$dataset[16])
+    ))
+
+  output$hospital <- plotly::renderPlotly(plot_lineman(
+    data = get(plots$dataset[17]),
+    legend = "Hospital"))
+
+  output$nhs.workforce <- plotly::renderPlotly(plot_lineman(
+    data = get(plots$dataset[18]),
+    legend = "Workforce"))
+
+  output$scot.testing.cum.people <- plotly::renderPlotly(plot_lineman(
+    data = get(plots$dataset[19]),
+    legend = "Workforce"))
+
+  output$scot.testing.cum.tests <- plotly::renderPlotly(plot_lineman(
+    data = get(plots$dataset[20]),
+    legend = "Workforce"))
+
+  output$scot.testing.daily.people <- plotly::renderPlotly(plot_stackedman(
+    data = get(plots$dataset[21])))
+
+  output$scot.testing.daily.tests <- plotly::renderPlotly(plot_stackedman(
+    data = get(plots$dataset[22])))
+
+  output$special <- plotly::renderPlotly(plot_stackedman(
+    data = get(plots$dataset[23])))
 
 
 }

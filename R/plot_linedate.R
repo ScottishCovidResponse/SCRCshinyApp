@@ -29,7 +29,7 @@ plot_linedate <- function(data, legend, n) {
       dplyr::mutate(variable = factor(variable, levels = ind))
   }
 
-  pal <- RColorBrewer::display.brewer.pal(n = 7, name = 'Dark2')
+  pal <- RColorBrewer::brewer.pal(n = 7, name = 'Dark2')
 
   plotly::plot_ly(plot.this, x = ~date, y = ~value) %>%
     plotly::add_trace(type = "scatter", mode = "markers+lines",

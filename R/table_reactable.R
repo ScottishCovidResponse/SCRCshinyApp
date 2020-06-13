@@ -10,7 +10,7 @@ table_reactable <- function(covid_dat, all_dat) {
   dat_covid <- tmp_covid %>%
     dplyr::group_by(area) %>%
     dplyr::summarise(covid_deaths = list(value),
-                     covid_total = sum(value), .groups = "drop") %>%
+                     covid_total = sum(value, na.rm = TRUE), .groups = "drop") %>%
     dplyr::mutate(covid_sparkline = NA)
 
   tmp_all <- all_dat %>%
@@ -19,7 +19,7 @@ table_reactable <- function(covid_dat, all_dat) {
   dat_all <- tmp_all %>%
     dplyr::group_by(area) %>%
     dplyr::summarise(all_deaths = list(value),
-                     all_total = sum(value), .groups = "drop") %>%
+                     all_total = sum(value, na.rm = TRUE), .groups = "drop") %>%
     dplyr::mutate(all_sparkline = NA)
 
   tab.this <- merge(dat_covid, dat_all, by = "area")
