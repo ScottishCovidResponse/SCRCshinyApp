@@ -12,6 +12,7 @@
 #' @import magrittr
 #' @import plotly
 #' @import reactable
+#' @import SCRCdataAPI
 #' @import shiny
 #' @import shinycssloaders
 #' @import semantic.dashboard

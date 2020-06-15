@@ -12,6 +12,7 @@ Imports:
     magrittr,
     plotly,
     reactable,
+    SCRCdataAPI,
     shiny,
     shinycssloaders,
     semantic.dashboard,

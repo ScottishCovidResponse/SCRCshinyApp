@@ -4,7 +4,10 @@
 \alias{launchApp}
 \title{launchApp}
 \usage{
-launchApp()
+launchApp(refresh = FALSE)
+}
+\arguments{
+\item{refresh}{default is FALSE}
 }
 \description{
 launchApp
