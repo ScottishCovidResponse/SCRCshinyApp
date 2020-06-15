@@ -15,5 +15,6 @@
 #' @import shiny
 #' @import shinycssloaders
 #' @import semantic.dashboard
+#' @import sparkline
 #'
 NULL
