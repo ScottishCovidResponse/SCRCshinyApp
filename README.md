@@ -23,7 +23,7 @@ To update the dataset prior to running the app:
 launchApp(refresh = TRUE)
 ```
 
-Note that this is dependent on the SCRCshinyApp package being installed:
+Note that this is dependent on the SCRCdataAPI package being installed:
 
 ```{r}
 install_github("ScottishCovidResponse/SCRCdataAPI")
