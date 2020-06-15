@@ -28,7 +28,7 @@ table_three <- function(data) {
       show = FALSE,
       cell = function(x)
         sparkline::sparkline(x, type = "bar", chartRangeMin = 0,
-                             chartRangeMax = max(tmp_confirmed$value))
+                             chartRangeMax = max(tmp$value))
     ),
     total = reactable::colDef(
       name = "COVID-19 patients in hospital - Confirmed",

@@ -8,6 +8,8 @@
 # source("preload_data.R", local = TRUE)
 # source("frontpage.R", local = TRUE)
 source("deaths-involving-coronavirus-covid-19.R", local = TRUE)
+source("coronavirus-covid-19-management-information.R", local = TRUE)
+
 # source("demographics.R", local = TRUE)
 
 

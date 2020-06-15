@@ -4,7 +4,7 @@
 \alias{plot_lineman}
 \title{plot_lineman}
 \usage{
-plot_lineman(data, legend)
+plot_lineman(data)
 }
 \description{
 plot_lineman

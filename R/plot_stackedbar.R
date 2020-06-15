@@ -33,11 +33,17 @@ plot_stackedbar <- function(data, sortby) {
   }
 
   plot.this <- plot.this %>%
-    dplyr::mutate(rowid = factor(rowid, levels = vec)) %>%
+    dplyr::mutate(variable = as.character(variable)) %>%
+    dplyr::mutate(rowid = factor(rowid, levels = vec),
+                  variable = dplyr::case_when(
+                    variable == "Other institution" ~ "Other",
+                    variable == "Home / Non-institution" ~ "Home / Non-inst.",
+                    T ~ variable
+                  )) %>%
     dplyr::mutate(variable = factor(variable,
                                     levels = rev(c("Hospital", "Care Home",
-                                                   "Home / Non-institution",
-                                                   "Other institution"))))
+                                                   "Home / Non-inst.",
+                                                   "Other"))))
 
   total <- plot.this %>%
     dplyr::group_by(rowid) %>%
