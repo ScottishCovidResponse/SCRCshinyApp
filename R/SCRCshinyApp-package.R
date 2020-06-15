@@ -12,6 +12,7 @@
 #' @import magrittr
 #' @import plotly
 #' @import shiny
+#' @import shinycssloaders
 #' @import semantic.dashboard
 #'
 NULL

@@ -1,9 +1,9 @@
-#' runApp
+#' launchApp
 #'
 #' @export
 #'
-runApp <- function() {
-  appDir <- system.file("inst/app.R", package = "SCRCshinyApp")
+launchApp <- function() {
+  appDir <- system.file("shinyapp/app.R", package = "SCRCshinyApp")
   if (appDir == "")
     stop("Could not find SCRCshinyApp. Try re-installing `SCRCshinyApp`.",
          call. = FALSE)

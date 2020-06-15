@@ -5,10 +5,10 @@
 
 # Extract data ------------------------------------------------------------
 
-h5filename <- system.file("data-raw/coronavirus-covid-19-management-information.h5",
+h5filename <- system.file("extdata/coronavirus-covid-19-management-information.h5",
                           package = "SCRCshinyApp")
 
-conversion.table <- read.csv2(system.file("data-raw/convert.csv",
+conversion.table <- read.csv2(system.file("extdata/convert.csv",
                                           package = "SCRCshinyApp")) %>%
   select(-X, -areatypename) %>% unique()
 

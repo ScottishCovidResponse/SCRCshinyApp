@@ -1,9 +1,5 @@
-# library(ggplot2)
-# library(magrittr)
-# library(rgdal)
-# library(SCRCdataAPI)
-# library(spdplyr)
-# library(shinycssloaders)
+library(dplyr)
+library(hdf5r)
 
 # source("preload_data.R", local = TRUE)
 # source("frontpage.R", local = TRUE)
