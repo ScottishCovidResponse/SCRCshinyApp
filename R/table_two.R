@@ -43,26 +43,29 @@ table_two <- function(confirmed, suspected, total) {
   dat_confirmed <- tmp_confirmed %>%
     dplyr::group_by(area) %>%
     dplyr::summarise(confirmed_deaths = list(value),
-                     confirmed_total = sum(value, na.rm = TRUE), .groups = "drop") %>%
+                     confirmed_total = sum(value, na.rm = TRUE),
+                     .groups = "drop") %>%
     dplyr::mutate(confirmed_sparkline = NA)
 
   dat_suspected <- tmp_suspected %>%
     dplyr::group_by(area) %>%
     dplyr::summarise(suspected_deaths = list(value),
-                     suspected_total = sum(value, na.rm = TRUE), .groups = "drop") %>%
+                     suspected_total = sum(value, na.rm = TRUE),
+                     .groups = "drop") %>%
     dplyr::mutate(suspected_sparkline = NA)
 
   dat_total <- tmp_total %>%
     dplyr::group_by(area) %>%
     dplyr::summarise(total_deaths = list(value),
-                     total_total = sum(value, na.rm = TRUE), .groups = "drop") %>%
+                     total_total = sum(value, na.rm = TRUE),
+                     .groups = "drop") %>%
     dplyr::mutate(total_sparkline = NA)
 
   tab.this <- merge(dat_confirmed, dat_suspected, by = "area", all = TRUE) %>%
     merge(dat_total, by = "area", all = TRUE)
 
   reactable::reactable(tab.this, columns = list(
-    area = reactable::colDef(name = "Area"),
+    area = reactable::colDef(name = "NHS health board"),
     confirmed_deaths = reactable::colDef(
       name = "Confirmed",
       show = FALSE,

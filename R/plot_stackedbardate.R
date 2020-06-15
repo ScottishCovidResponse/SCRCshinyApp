@@ -33,7 +33,6 @@ plot_stackedbardate <- function(data) {
 
   buffer <- max(total$total) / 20
 
-
   plotly::plot_ly(plot.this, x = ~variable, y = ~value, type = "bar",
                   color = ~rowid, colors = pal) %>%
     plotly::add_annotations(xref = "total", yref = "rowid",

@@ -2,7 +2,7 @@
 #'
 #' @export
 #'
-plot_lineman <- function(data, legend) {
+plot_lineman <- function(data) {
 
   plot.this <- data %>%
     tibble::rownames_to_column("variable") %>%
@@ -14,7 +14,8 @@ plot_lineman <- function(data, legend) {
     )) %>%
     dplyr::mutate(value = as.numeric(value))
 
-  pal <- RColorBrewer::brewer.pal(unique(plot.this$variable), name = 'Dark2')
+  pal <- RColorBrewer::brewer.pal(n = length(unique(plot.this$variable)),
+                                  name = 'Dark2')
 
   plotly::plot_ly(plot.this, x = ~date, y = ~value) %>%
     plotly::add_trace(type = "scatter", mode = "markers+lines",
@@ -23,7 +24,9 @@ plot_lineman <- function(data, legend) {
                                 type = "date",
                                 tickformat = "%d. %b"),
                    yaxis = list(title = "Value"),
-                   legend = list(title = list(text = paste0("<b>", legend,
-                                                            "</b>"))),
-                   autosize = TRUE)
+                   autosize = TRUE,
+                   legend = list(orientation = "h",
+                                 xanchor = "center",
+                                 x = 0.5,
+                                 y = -0.2))
 }

@@ -14,7 +14,8 @@ plot_stackedman <- function(data, stacked = FALSE) {
     )) %>%
     dplyr::mutate(value = as.numeric(value))
 
-  pal <- viridis::viridis(length(unique(plot.this$variable)))
+  pal <- RColorBrewer::brewer.pal(n = length(unique(plot.this$variable)),
+                                  name = 'Dark2')
 
   total <- plot.this %>%
     dplyr::group_by(variable) %>%
