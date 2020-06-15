@@ -11,6 +11,7 @@
 #' @import leaflet
 #' @import magrittr
 #' @import plotly
+#' @import reactable
 #' @import shiny
 #' @import shinycssloaders
 #' @import semantic.dashboard

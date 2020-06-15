@@ -11,6 +11,7 @@ Imports:
     leaflet,
     magrittr,
     plotly,
+    reactable,
     shiny,
     shinycssloaders,
     semantic.dashboard
