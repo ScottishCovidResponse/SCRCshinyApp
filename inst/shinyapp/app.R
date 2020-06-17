@@ -466,35 +466,36 @@ ui <- semantic.dashboard::dashboardPage(
         # Tab 2, row 2 ------------------------------------------------------
 
         shiny::fluidRow(
-          semantic.dashboard::box(width = 8,
+          semantic.dashboard::box(width = 16,
                                   title = plots$title[4],
                                   color = "red",
                                   ribbon = TRUE,
                                   title_side = "top right",
                                   semantic.dashboard::column(
-                                    width = 8,
+                                    width = 16,
                                     shinycssloaders::withSpinner(
                                       reactable::reactableOutput("nhs.testing")
                                     ),
                                     div(plots$location[4],
                                         style = "color:grey; text-align:right")
                                   )
-          ),
-          semantic.dashboard::box(width = 8,
-                                  title = gsub("cumulative", "current",
-                                               plots$title[4]),
-                                  color = "grey",
-                                  ribbon = TRUE,
-                                  title_side = "top right",
-                                  semantic.dashboard::column(
-                                    width = 8,
-                                    shinycssloaders::withSpinner(
-                                      plotly::plotlyOutput("nhs.pie",
-                                                           height = "80%")
-                                    ),
-                                    br()
-                                  )
           )
+          # ,
+          # semantic.dashboard::box(width = 8,
+          #                         title = gsub("cumulative", "current",
+          #                                      plots$title[4]),
+          #                         color = "grey",
+          #                         ribbon = TRUE,
+          #                         title_side = "top right",
+          #                         semantic.dashboard::column(
+          #                           width = 8,
+          #                           shinycssloaders::withSpinner(
+          #                             plotly::plotlyOutput("nhs.pie",
+          #                                                  height = "80%")
+          #                           ),
+          #                           br()
+          #                         )
+          # )
         ),
 
         h1("Hospital"),

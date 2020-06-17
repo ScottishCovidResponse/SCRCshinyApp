@@ -14,8 +14,14 @@ plot_stackedman <- function(data, stacked = FALSE) {
     )) %>%
     dplyr::mutate(value = as.numeric(value))
 
-  pal <- RColorBrewer::brewer.pal(n = length(unique(plot.this$variable)),
-                                  name = 'Dark2')
+  n <- length(unique(plot.this$variable))
+  if(n == 1) {
+    pal <- "#1B9E77"
+  } else if (n == 2) {
+    pal <- c("#1B9E77", "#D95F02")
+  } else
+    pal <- RColorBrewer::brewer.pal(n = n,
+                                    name = 'Dark2')
 
   total <- plot.this %>%
     dplyr::group_by(variable) %>%

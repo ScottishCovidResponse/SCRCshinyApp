@@ -4,9 +4,15 @@
 \alias{bar_chart}
 \title{bar_chart}
 \usage{
-bar_chart(label, value, max_value, height = "16px", fill = "#fc5185")
+bar_chart(
+  label,
+  width = "100\%",
+  marginLeft = "8px",
+  height = "16px",
+  fill = "#fc5185",
+  background = NULL
+)
 }
 \description{
-Adapted from the reactable cookbook
 https://glin.github.io/reactable/articles/cookbook/cookbook.html
 }

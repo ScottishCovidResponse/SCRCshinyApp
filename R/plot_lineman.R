@@ -14,8 +14,14 @@ plot_lineman <- function(data) {
     )) %>%
     dplyr::mutate(value = as.numeric(value))
 
-  pal <- RColorBrewer::brewer.pal(n = length(unique(plot.this$variable)),
-                                  name = 'Dark2')
+  n <- length(unique(plot.this$variable))
+  if(n == 1) {
+    pal <- "#1B9E77"
+  } else if (n == 2) {
+    pal <- c("#1B9E77", "#D95F02")
+  } else
+    pal <- RColorBrewer::brewer.pal(n = n,
+                                    name = 'Dark2')
 
   plotly::plot_ly(plot.this, x = ~date, y = ~value) %>%
     plotly::add_trace(type = "scatter", mode = "markers+lines",
