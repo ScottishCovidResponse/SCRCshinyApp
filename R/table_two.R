@@ -10,33 +10,18 @@ table_two <- function(confirmed, suspected, total) {
   tmp_confirmed <- confirmed %>%
     tibble::rownames_to_column("area") %>%
     reshape2::melt(id.var = "area", variable.name = "date") %>%
-    dplyr::mutate(value = dplyr::case_when(
-      grepl("\\*", value) ~ "0",
-      grepl("NA", value) ~ "0",
-      T ~ value
-    )) %>%
     dplyr::mutate(value = as.numeric(value)) %>%
     tidyr::complete(area = areas, date = dates, fill = list(value = 0))
 
   tmp_suspected <- suspected %>%
     tibble::rownames_to_column("area") %>%
     reshape2::melt(id.var = "area", variable.name = "date") %>%
-    dplyr::mutate(value = dplyr::case_when(
-      grepl("\\*", value) ~ "0",
-      grepl("NA", value) ~ "0",
-      T ~ value
-    )) %>%
     dplyr::mutate(value = as.numeric(value)) %>%
     tidyr::complete(area = areas, date = dates, fill = list(value = 0))
 
   tmp_total <- total %>%
     tibble::rownames_to_column("area") %>%
     reshape2::melt(id.var = "area", variable.name = "date") %>%
-    dplyr::mutate(value = dplyr::case_when(
-      grepl("\\*", value) ~ "0",
-      grepl("NA", value) ~ "0",
-      T ~ value
-    )) %>%
     dplyr::mutate(value = as.numeric(value)) %>%
     tidyr::complete(area = areas, date = dates, fill = list(value = 0))
 

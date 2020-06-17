@@ -7,11 +7,6 @@ plot_stackedman <- function(data, stacked = FALSE) {
   plot.this <- data %>%
     tibble::rownames_to_column("variable") %>%
     reshape2::melt(id.var = "variable", variable.name = "date") %>%
-    dplyr::mutate(value = dplyr::case_when(
-      grepl("\\*", value) ~ "0",
-      grepl("NA", value) ~ "0",
-      T ~ value
-    )) %>%
     dplyr::mutate(value = as.numeric(value))
 
   n <- length(unique(plot.this$variable))

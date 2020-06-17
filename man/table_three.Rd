@@ -4,7 +4,7 @@
 \alias{table_three}
 \title{table_three}
 \usage{
-table_three(data)
+table_three(data, totals)
 }
 \description{
 table_three

@@ -2,23 +2,11 @@
 #'
 #' @export
 #'
-table_three <- function(data) {
-
-  # Load health board population counts
-  h5filename <- system.file("extdata/hb.h5", package = "SCRCshinyApp")
-  totals <- SCRCdataAPI::read_array(h5filename = h5filename,
-                                    path = "hb/total/persons") %>%
-    convert_areacodes(conversion.table) %>%
-    tibble::rownames_to_column("area") %>%
-    dplyr::rename(population = total)
+table_three <- function(data, totals) {
 
   tmp <- data %>%
     tibble::rownames_to_column("area") %>%
     reshape2::melt(id.var = "area", variable.name = "date") %>%
-    dplyr::mutate(value = dplyr::case_when(
-      grepl("\\*", value) ~ "0",
-      grepl("NA", value) ~ "0",
-      T ~ value)) %>%
     dplyr::mutate(value = as.numeric(value))
 
   tab.this <- tmp %>%
