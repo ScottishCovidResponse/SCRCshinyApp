@@ -998,9 +998,18 @@ server <- function(input, output) {
       convert_areacodes(conversion.table)
   ))
 
+  # Load health board population counts
+  h5filename <- system.file("extdata/hb.h5", package = "SCRCshinyApp")
+  totals <- SCRCdataAPI::read_array(h5filename = h5filename,
+                                    path = "hb/total/persons") %>%
+    convert_areacodes(conversion.table) %>%
+    tibble::rownames_to_column("area") %>%
+    dplyr::rename(population = total)
+
   output$nhs.testing <- reactable::renderReactable(table_three(
     data = get(plots$dataset[4]) %>%
-      convert_areacodes(conversion.table)
+      convert_areacodes(conversion.table),
+    totals = totals
   ))
 
   tmp.nhs <- get(plots$dataset[4]) %>%
