@@ -10,6 +10,8 @@ launchApp <- function(refresh = FALSE) {
     SCRCdataAPI::download_source_version(dataset = "scotgov_management")
     sourcefile <- "data-raw/coronavirus-covid-19-management-information.csv"
     h5filename <- "coronavirus-covid-19-management-information.h5"
+
+    if(file.exists(h5filename)) file.remove(h5filename)
     SCRCdataAPI::process_scotgov_management(sourcefile = sourcefile,
                                h5filename = h5filename)
     file.copy(h5filename, file.path("inst", "extdata", h5filename),
@@ -21,6 +23,8 @@ launchApp <- function(refresh = FALSE) {
     h5filename <- "deaths-involving-coronavirus-covid-19.h5"
     SCRCdataAPI::process_scot_gov_deaths(sourcefile = sourcefile,
                             h5filename = h5filename)
+
+    if(file.exists(h5filename)) file.remove(h5filename)
     file.copy(h5filename, file.path("inst", "extdata", h5filename),
               overwrite = TRUE)
     file.remove(h5filename)
